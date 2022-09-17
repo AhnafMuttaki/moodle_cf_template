@@ -82,7 +82,7 @@ for i in nginx php-fpm mariadb; do sudo systemctl start $i; done
 #sudo systemctl restart nginx.service
 
 # Install Moodle
-yum install git -y
+sudo yum install git -y
 git clone https://github.com/moodle/moodle.git
 cp -R moodle /usr/share/nginx/html
 chown -R nginx:nginx /usr/share/nginx/html/moodle
