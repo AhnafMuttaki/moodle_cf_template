@@ -115,7 +115,7 @@ global \$CFG;
   'dbcollation' => 'utf8mb4_general_ci',
 );
 
-\$CFG->wwwroot   = 'http://ec2-52-77-238-63.ap-southeast-1.compute.amazonaws.com';
+\$CFG->wwwroot   = '$2';
 \$CFG->dataroot  = '/usr/share/nginx/html/moodledata';
 \$CFG->admin     = 'admin';
 
