@@ -6,10 +6,14 @@ Parameters:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: 'AWS::EC2::KeyPair::KeyName'
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  InstanceId:
+    Description: Ec2 Instance ID
+    Type: String
+    Default: ami-0b89f7b3f054b957e
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
-    Default: t2.small
+    Default: t2.micro
     AllowedValues:
       - t1.micro
       - t2.nano
@@ -372,24 +376,17 @@ Resources:
             yum:
               git: []
     Properties:
-      ImageId: ami-0b89f7b3f054b957e
+      ImageId: !Ref InstanceId
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref WebServerSecurityGroup
       KeyName: !Ref KeyName
-      # UserData: !Base64 
-      #   'Fn::Join':
-      #     - ''
-      #     - - |
-      #         #!/bin/sh
-      #       - |
-      #         sudo yum install git -y
-      #       - |
-      #         sudo git clone https://github.com/AhnafMuttaki/moodle_cf_template.git
-      #       - |
-      #         sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh
-      #       - |
-      #         sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh
+      UserData: !Base64 |
+        #!/bin/sh
+        sudo yum install git -y
+        sudo git clone https://github.com/AhnafMuttaki/moodle_cf_template.git
+        sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh
+        sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -403,6 +400,27 @@ Resources:
           FromPort: '22'
           ToPort: '22'
           CidrIp: !Ref SSHLocation
+  # DB INSTANCE
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: 'moodle_db'
+      Engine: MySQL
+      EngineVersion: '5.7.38'
+      MasterUsername: 'moodle_user'
+      DBInstanceClass: 'db.t2.small'
+      DBSecurityGroups:
+        - Ref: DBSecurityGroup
+      AllocatedStorage: '5'
+      MasterUserPassword: 'Admin1234'
+  DBSecurityGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      DBSecurityGroupIngress:
+        EC2SecurityGroupName:
+          - !Ref WebServerSecurityGroup
+      GroupDescription: Frontend Access
+
 Outputs:
   WebsiteURL:
     Description: URL for newly created Instance

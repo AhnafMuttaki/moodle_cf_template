@@ -55,7 +55,7 @@ http {
         add_header X-Frame-Options "SAMEORIGIN";
         add_header X-XSS-Protection "1; mode=block";
         add_header X-Content-Type-Options "nosniff";
-        index index.php;
+        index index.php index.html index.htm;
         charset utf-8;
         location / {
             try_files \$uri \$uri/ /index.php?\$query_string;
@@ -63,10 +63,18 @@ http {
         location = /favicon.ico { access_log off; log_not_found off; }
         location = /robots.txt { access_log off; log_not_found off; }
         error_page 404 /index.php;
-        location ~ \.php$ {
+        location /dataroot/ {
+            internal                   ;
+            alias /usr/share/nginx/html/moodledata/ ;
+        }
+
+        location ~ [^/]\.php(/|$) {
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_index index.php;
             fastcgi_pass unix:/var/run/php-fpm/www.sock;
-            fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
             include fastcgi_params;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         }
         location ~ /\.(?!well-known).* {
             deny all;
@@ -86,8 +94,8 @@ sudo yum install git -y
 git clone https://github.com/moodle/moodle.git
 cp -R moodle /usr/share/nginx/html
 chown -R nginx:nginx /usr/share/nginx/html/moodle
-chmod -R 777 /usr/share/nginx/html/moodle
+chmod -R 755 /usr/share/nginx/html/moodle
 
 # Setup Moodle Data Folder
-mkdir /usr/share/nginx/html/moodle_data
-chmod -R 777 /usr/share/nginx/html/moodle_data
+mkdir /usr/share/nginx/html/moodledata
+chmod -R 777 /usr/share/nginx/html/moodledata
