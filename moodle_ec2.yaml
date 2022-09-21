@@ -379,6 +379,15 @@ Mappings:
       HVM64: ami-01fee56b22f308154
       HVMG2: ami-0fe84a5b4563d8f27
 Resources:
+  ElasticIP:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+  ElasticIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties: 
+      EIP: !Ref ElasticIP
+      InstanceId: !Ref WebServerInstance
   WebServerInstance:
     Type: 'AWS::EC2::Instance'
     Metadata:
@@ -397,13 +406,7 @@ Resources:
         - !Ref WebServerSecurityGroup
       KeyName: !Ref KeyName
       UserData: !Base64
-        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh"]]
-      # UserData: !Base64 |
-      #   #!/bin/sh
-        # sudo yum install git -y
-        # sudo git clone https://github.com/AhnafMuttaki/moodle_cf_template.git
-        # sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh
-        # sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh
+        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",Fn::GetAtt: ["ElasticIP", "AllocationId"]]]]]]]
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -438,14 +441,22 @@ Resources:
       GroupDescription: Frontend Access
 
 Outputs:
+  # WebsiteURL:
+  #   Description: URL for newly created Instance
+  #   Value: !Join 
+  #     - ''
+  #     - - 'http://'
+  #       - !GetAtt 
+  #         - WebServerInstance
+  #         - PublicDnsName
   WebsiteURL:
     Description: URL for newly created Instance
     Value: !Join 
       - ''
       - - 'http://'
         - !GetAtt 
-          - WebServerInstance
-          - PublicDnsName
+          - ElasticIP
+          - AllocationId
 
   RDSEndPoint:
     Description: End Point of rds
