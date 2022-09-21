@@ -381,12 +381,14 @@ Resources:
       SecurityGroups:
         - !Ref WebServerSecurityGroup
       KeyName: !Ref KeyName
-      UserData: !Base64 |
-        #!/bin/sh
-        sudo yum install git -y
-        sudo git clone https://github.com/AhnafMuttaki/moodle_cf_template.git
-        sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh
-        sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh
+      UserData: !Base64
+        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","/bin/php"]]
+      # UserData: !Base64 |
+      #   #!/bin/sh
+      #   sudo yum install git -y
+      #   sudo git clone https://github.com/AhnafMuttaki/moodle_cf_template.git
+      #   sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh
+      #   sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -429,3 +431,12 @@ Outputs:
         - !GetAtt 
           - WebServerInstance
           - PublicDnsName
+
+  RDSEndPoint:
+    Descrption: End Point of rds
+    Value: !Join 
+      - ''
+      - - !GetAtt 
+          - DBInstance
+          - Endpoint
+            - Address

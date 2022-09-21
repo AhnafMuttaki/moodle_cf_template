@@ -82,6 +82,7 @@ http {
     }
 }
 EOF
+
 for i in nginx php-fpm mariadb; do sudo systemctl enable $i --now; done
 for i in nginx php-fpm mariadb; do sudo systemctl start $i; done
 # lets encrypt
@@ -93,8 +94,41 @@ for i in nginx php-fpm mariadb; do sudo systemctl start $i; done
 sudo yum install git -y
 git clone https://github.com/moodle/moodle.git
 cp -R moodle /usr/share/nginx/html
+cat << EOF > /usr/share/nginx/html/moodle/config.php
+<?php  // Moodle configuration file
+
+unset(\$CFG);
+global \$CFG;
+\$CFG = new stdClass();
+
+\$CFG->dbtype    = 'mysqli';
+\$CFG->dblibrary = 'native';
+\$CFG->dbhost    = '$1';
+\$CFG->dbname    = 'moodle_db';
+\$CFG->dbuser    = 'moodle_user';
+\$CFG->dbpass    = 'Admin1234';
+\$CFG->prefix    = 'mdl_';
+\$CFG->dboptions = array (
+  'dbpersist' => 0,
+  'dbport' => 3306,
+  'dbsocket' => '',
+  'dbcollation' => 'utf8mb4_general_ci',
+);
+
+\$CFG->wwwroot   = 'http://ec2-52-77-238-63.ap-southeast-1.compute.amazonaws.com';
+\$CFG->dataroot  = '/usr/share/nginx/html/moodledata';
+\$CFG->admin     = 'admin';
+
+\$CFG->directorypermissions = 0777;
+
+require_once(__DIR__ . '/lib/setup.php');
+
+// There is no php closing tag in this file,
+// it is intentional because it prevents trailing whitespace problems!
+EOF
 chown -R nginx:nginx /usr/share/nginx/html/moodle
 chmod -R 755 /usr/share/nginx/html/moodle
+
 
 # Setup Moodle Data Folder
 mkdir /usr/share/nginx/html/moodledata
