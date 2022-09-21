@@ -433,7 +433,7 @@ Outputs:
           - PublicDnsName
 
   RDSEndPoint:
-    Descrption: End Point of rds
+    Description: End Point of rds
     Value: !Join 
       - ''
       - - !GetAtt 
