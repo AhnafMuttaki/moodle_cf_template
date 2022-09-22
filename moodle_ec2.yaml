@@ -91,7 +91,7 @@ Parameters:
   MoodleAdminPass:
       Description: Admin Password of Moodle Instance
       Type: String
-      Default: ""
+      Default: "Admin@1234"
   MoodleAdminEmail:
       Description: AdminEmail of Moodle Instance
       Type: String
@@ -99,11 +99,11 @@ Parameters:
   MoodleFullName:
       Description: Full Name of Moodle Instance
       Type: String
-      Default: Moodle Learning Management System
+      Default: "TestLMS"
   MoodleShortName:
       Description: Short Name of Moodle Instance
       Type: String
-      Default: LMS
+      Default: "LMS"
 Mappings:
   AWSInstanceType2Arch:
     t1.micro:
@@ -421,7 +421,7 @@ Resources:
                       [
                          "#!/bin/bash -xe", 
                          "sudo /bin/yum install git -y",
-                         "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
+                         "sudo /bin/git clone --branch MOODLE_400_STABLE https://github.com/AhnafMuttaki/moodle_cf_template.git",
                          "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                          "Fn::Sub": [
                             "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh ${DBHost} ${DBName} ${DBUser} ${DBPass} ${WebHost}",
