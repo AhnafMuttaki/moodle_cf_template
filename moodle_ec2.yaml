@@ -8,7 +8,7 @@ Parameters:
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
   InstanceId:
     Description: Ec2 Instance ID
-    Type: String
+    Type: AWS::EC2::Image::Id
     Default: ami-0b89f7b3f054b957e
   InstanceType:
     Description: WebServer EC2 instance type
@@ -92,6 +92,36 @@ Parameters:
   DatabasePassword: 
     Description: 'The database password'
     Type: String
+    NoEcho: true
+
+  MoodleLang:
+    Description: Language Code of Moodle Instance
+    Type: String
+    Default: en
+  MoodleAdminUserName:
+      Description: Admin User Name of Moodle Instance
+      Type: String
+      Default: admin
+  MoodleAdminPass:
+      Description: Admin Password of Moodle Instance
+      Type: String
+      Default: ""
+  MoodleAdminEmail:
+      Description: AdminEmail of Moodle Instance
+      Type: String
+      Default: admin@yopmail.com
+  MoodleFullName:
+      Description: Full Name of Moodle Instance
+      Type: String
+      Default: Moodle Learning Management System
+  MoodleShortName:
+      Description: Short Name of Moodle Instance
+      Type: String
+      Default: LMS
+  MoodleSummary:
+      Description: Short Name of Moodle Instance
+      Type: String
+      Default: Moodle learning management system  
 
 Mappings:
   AWSInstanceType2Arch:
@@ -406,7 +436,7 @@ Resources:
         - !Ref WebServerSecurityGroup
       KeyName: !Ref KeyName
       UserData: !Base64
-        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",!Ref ElasticIP]]]]]]
+        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",!Ref ElasticIP]]], !Ref MoodleLang, !Ref MoodleAdminUserName, !Ref MoodleAdminPass, !Ref MoodleAdminEmail, !Ref MoodleFullName, !Ref MoodleShortName,!Ref MoodleSummary]]]
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:

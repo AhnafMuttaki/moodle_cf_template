@@ -133,3 +133,7 @@ chmod -R 755 /usr/share/nginx/html/moodle
 # Setup Moodle Data Folder
 mkdir /usr/share/nginx/html/moodledata
 chmod -R 777 /usr/share/nginx/html/moodledata
+
+
+#Install Moodle
+/bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=$3 --adminuser=$4 --adminpass=$5 --adminemail=$6 --agree-license --fullname=$7 --shortname=$8
