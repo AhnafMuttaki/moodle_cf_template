@@ -424,14 +424,8 @@ Resources:
                          "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
                          "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                          "Fn::Sub": [
-                            "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh ${DBHost} ${DBName} ${DBUser} ${DBPass} ${WebHost}",
-                            {
-                              DBHost: !GetAtt DBInstance.Endpoint.Address,
-                              DBName: 'moodle_db',
-                              DBUser: 'moodle_user',
-                              DBPass: !Ref DatabasePassword,
-                              WebHost: !Ref ElasticIP
-                            }
+                            "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh {$DBHost} {$DBName} {$DBUser} {$DBPass} {$WebHost}",
+                            {}
                          ],
                          "Fn::Sub" : [ 
                             "/bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=${Lang} --adminuser=${AdminUser} --adminpass=${AdminPass} --adminemail=${AdminEmail} --agree-license --fullname=${FullName} --shortname=${ShortName}", 

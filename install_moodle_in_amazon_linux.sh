@@ -115,7 +115,7 @@ global \$CFG;
   'dbcollation' => 'utf8mb4_general_ci',
 );
 
-\$CFG->wwwroot   = 'http://$5';
+\$CFG->wwwroot   = '$5';
 \$CFG->dataroot  = '/usr/share/nginx/html/moodledata';
 \$CFG->admin     = 'admin';
 
