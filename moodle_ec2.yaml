@@ -406,7 +406,7 @@ Resources:
         - !Ref WebServerSecurityGroup
       KeyName: !Ref KeyName
       UserData: !Base64
-        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",Fn::GetAtt: ["ElasticIP", "AllocationId"]]]]]]]
+        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",!Ref ElasticIP]]]]]]
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -454,9 +454,7 @@ Outputs:
     Value: !Join 
       - ''
       - - 'http://'
-        - !GetAtt 
-          - ElasticIP
-          - AllocationId
+        - !Ref ElasticIP
 
   RDSEndPoint:
     Description: End Point of rds
