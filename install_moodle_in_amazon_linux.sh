@@ -104,9 +104,9 @@ global \$CFG;
 \$CFG->dbtype    = 'mysqli';
 \$CFG->dblibrary = 'native';
 \$CFG->dbhost    = '$1';
-\$CFG->dbname    = 'moodle_db';
-\$CFG->dbuser    = 'moodle_user';
-\$CFG->dbpass    = 'Admin1234';
+\$CFG->dbname    = '$8';
+\$CFG->dbuser    = '$9';
+\$CFG->dbpass    = '$0';
 \$CFG->prefix    = 'mdl_';
 \$CFG->dboptions = array (
   'dbpersist' => 0,

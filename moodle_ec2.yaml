@@ -50,7 +50,6 @@ Parameters:
       - c4.4xlarge
       - c4.8xlarge
       - g2.2xlarge
-      - g2.8xlarge
       - r3.large
       - r3.xlarge
       - r3.2xlarge
@@ -64,11 +63,9 @@ Parameters:
       - d2.2xlarge
       - d2.4xlarge
       - d2.8xlarge
-      - hi1.4xlarge
       - hs1.8xlarge
       - cr1.8xlarge
       - cc2.8xlarge
-      - cg1.4xlarge
     ConstraintDescription: must be a valid EC2 instance type.
   SSHLocation:
     Description: ' The IP address range that can be used to SSH to the EC2 instances'
@@ -121,7 +118,7 @@ Parameters:
   MoodleSummary:
       Description: Short Name of Moodle Instance
       Type: String
-      Default: Moodle learning management system  
+      Default: "Moodle learning management system"  
 
 Mappings:
   AWSInstanceType2Arch:
@@ -436,7 +433,7 @@ Resources:
         - !Ref WebServerSecurityGroup
       KeyName: !Ref KeyName
       UserData: !Base64
-        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",!Ref ElasticIP]]], !Ref MoodleLang, !Ref MoodleAdminUserName, !Ref MoodleAdminPass, !Ref MoodleAdminEmail, !Ref MoodleFullName, !Ref MoodleShortName,!Ref MoodleSummary]]]
+        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",!Ref DatabasePassword,Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",!Ref ElasticIP]], !Ref MoodleLang, !Ref MoodleAdminUserName, !Ref MoodleAdminPass, !Ref MoodleAdminEmail, !Ref MoodleFullName, !Ref MoodleShortName,!Ref MoodleSummary, !Ref DatabaseName, !Ref DatabaseUserName]]]]
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
