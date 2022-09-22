@@ -1,4 +1,4 @@
 Steps:
 1. Run CF template
-2. Add 'http://' in webroot of moodle config
-3. Run moodle install_database script
+2. Go To Webroot in browser.
+3. Install via web browser
