@@ -133,3 +133,6 @@ chmod -R 755 /usr/share/nginx/html/moodle
 # Setup Moodle Data Folder
 mkdir /usr/share/nginx/html/moodledata
 chmod -R 777 /usr/share/nginx/html/moodledata
+
+#install moodle
+# /bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=en --adminuser=admin --adminpass=Admin@1234 --adminemail=admin@yopmail.com --agree-license --fullname=TestLMS --shortname=LMS
