@@ -104,9 +104,9 @@ global \$CFG;
 \$CFG->dbtype    = 'mysqli';
 \$CFG->dblibrary = 'native';
 \$CFG->dbhost    = '$1';
-\$CFG->dbname    = '$8';
-\$CFG->dbuser    = '$9';
-\$CFG->dbpass    = '$0';
+\$CFG->dbname    = 'moodle_db';
+\$CFG->dbuser    = 'moodle_user';
+\$CFG->dbpass    = '$2';
 \$CFG->prefix    = 'mdl_';
 \$CFG->dboptions = array (
   'dbpersist' => 0,
@@ -115,7 +115,7 @@ global \$CFG;
   'dbcollation' => 'utf8mb4_general_ci',
 );
 
-\$CFG->wwwroot   = '$2';
+\$CFG->wwwroot   = '$3';
 \$CFG->dataroot  = '/usr/share/nginx/html/moodledata';
 \$CFG->admin     = 'admin';
 
@@ -136,4 +136,4 @@ chmod -R 777 /usr/share/nginx/html/moodledata
 
 
 #Install Moodle
-/bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=$3 --adminuser=$4 --adminpass=$5 --adminemail=$6 --agree-license --fullname=$7 --shortname=$8
+/bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=$4 --adminuser=$5 --adminpass=$6 --adminemail=$7 --agree-license --fullname=$8 --shortname=$9

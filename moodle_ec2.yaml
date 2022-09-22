@@ -75,17 +75,6 @@ Parameters:
     Default: 0.0.0.0/0
     AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
-
-  DatabaseName:
-    Description: 'The name of the moodle database'
-    Type: String
-    Default: moodle_db
-  
-  DatabaseUserName:
-    Description: 'The name of the moodle database user'
-    Type: String
-    Default: moodle_user
-
   DatabasePassword: 
     Description: 'The database password'
     Type: String
@@ -115,11 +104,6 @@ Parameters:
       Description: Short Name of Moodle Instance
       Type: String
       Default: LMS
-  MoodleSummary:
-      Description: Short Name of Moodle Instance
-      Type: String
-      Default: "Moodle learning management system"  
-
 Mappings:
   AWSInstanceType2Arch:
     t1.micro:
@@ -433,7 +417,43 @@ Resources:
         - !Ref WebServerSecurityGroup
       KeyName: !Ref KeyName
       UserData: !Base64
-        "Fn::Join": ["\n", ["#!/bin/bash -xe", "sudo /bin/yum install git -y","sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git","sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh", "Fn::Join": [" ",["sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh","Fn::Join": ["",["",!Ref DatabasePassword,Fn::GetAtt: ["DBInstance", "Endpoint.Address"]]], "Fn::Join": ["",["http://",!Ref ElasticIP]], !Ref MoodleLang, !Ref MoodleAdminUserName, !Ref MoodleAdminPass, !Ref MoodleAdminEmail, !Ref MoodleFullName, !Ref MoodleShortName,!Ref MoodleSummary, !Ref DatabaseName, !Ref DatabaseUserName]]]]
+        "Fn::Join": ["\n", 
+                      [
+                         "#!/bin/bash -xe", 
+                         "sudo /bin/yum install git -y",
+                         "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
+                         "Fn::Join": [ "",
+                            [
+                              "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh ",
+                              "Fn::Join": 
+                                  [" ",
+                                    [
+                                      "Fn::Join": ["",
+                                                        ["",
+                                                        Fn::GetAtt: ["DBInstance", "Endpoint.Address"]
+                                                        ]
+                                                    ],
+                                      !Ref DatabasePassword,
+                                      "Fn::Join": ["",
+                                                        [
+                                                        "http://",
+                                                        !Ref ElasticIP
+                                                        ]
+                                                    ],
+                                      !Ref MoodleLang, 
+                                      !Ref MoodleAdminUserName, 
+                                      !Ref MoodleAdminPass, 
+                                      !Ref MoodleAdminEmail, 
+                                      !Ref MoodleFullName, 
+                                      !Ref MoodleShortName
+                                    ]
+                                  ]
+                            ]
+
+                         ], 
+                         
+                        ]
+                    ]
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -451,10 +471,10 @@ Resources:
   DBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
-      DBName: !Ref DatabaseName
+      DBName: 'moodle_db'
       Engine: MySQL
       EngineVersion: '5.7.38'
-      MasterUsername: !Ref DatabaseUserName
+      MasterUsername: 'moodle_user'
       DBInstanceClass: 'db.t2.small'
       DBSecurityGroups:
         - Ref: DBSecurityGroup
@@ -468,21 +488,18 @@ Resources:
       GroupDescription: Frontend Access
 
 Outputs:
-  # WebsiteURL:
-  #   Description: URL for newly created Instance
-  #   Value: !Join 
-  #     - ''
-  #     - - 'http://'
-  #       - !GetAtt 
-  #         - WebServerInstance
-  #         - PublicDnsName
   WebsiteURL:
     Description: URL for newly created Instance
     Value: !Join 
       - ''
       - - 'http://'
         - !Ref ElasticIP
-
   RDSEndPoint:
     Description: End Point of rds
     Value: !GetAtt DBInstance.Endpoint.Address
+  MoodleUserName:
+    Description: Moodle Admin User Name
+    Value: !Ref MoodleAdminUserName
+  MoodleAdminPassword:
+    Description: Moodle Admin Password
+    Value: !Ref MoodleAdminPass
