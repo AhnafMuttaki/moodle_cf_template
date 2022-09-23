@@ -421,7 +421,7 @@ Resources:
                       [
                          "#!/bin/bash -xe", 
                          "sudo /bin/yum install git -y",
-                         "sudo /bin/git clone --branch MOODLE_400_STABLE https://github.com/AhnafMuttaki/moodle_cf_template.git",
+                         "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
                          "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                          "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh"
                       ],     
