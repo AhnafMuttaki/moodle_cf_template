@@ -1,6 +1,6 @@
 Does:
-installs nginx and downloads moodle
-
+- installs nginx
+- downloads moodle
+- update config file
+- installs moodle
 Remaining:
-configuring config.php in moodle
-run install moodle script
