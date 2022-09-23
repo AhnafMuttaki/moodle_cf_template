@@ -1,4 +1,6 @@
-Steps:
-1. Run CF template
-2. Go To Webroot in browser.
-3. Install via web browser
+Does:
+installs nginx and downloads moodle
+
+Remaining:
+configuring config.php in moodle
+run install moodle script

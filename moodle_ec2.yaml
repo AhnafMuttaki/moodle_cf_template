@@ -79,7 +79,7 @@ Parameters:
     Description: 'The database password'
     Type: String
     NoEcho: true
-
+    Default: 'Admin1234'
   MoodleLang:
     Description: Language Code of Moodle Instance
     Type: String
@@ -91,7 +91,7 @@ Parameters:
   MoodleAdminPass:
       Description: Admin Password of Moodle Instance
       Type: String
-      Default: ""
+      Default: "Admin@1234"
   MoodleAdminEmail:
       Description: AdminEmail of Moodle Instance
       Type: String
@@ -99,11 +99,11 @@ Parameters:
   MoodleFullName:
       Description: Full Name of Moodle Instance
       Type: String
-      Default: Moodle Learning Management System
+      Default: "TestLMS"
   MoodleShortName:
       Description: Short Name of Moodle Instance
       Type: String
-      Default: LMS
+      Default: "LMS"
 Mappings:
   AWSInstanceType2Arch:
     t1.micro:
@@ -423,16 +423,25 @@ Resources:
                          "sudo /bin/yum install git -y",
                          "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
                          "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                         "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                          "Fn::Sub": [
-                            "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh ${DBHost} ${DBName} ${DBUser} ${DBPass} ${WebHost}",
-                            {
-                              DBHost: !GetAtt DBInstance.Endpoint.Address,
-                              DBName: 'moodle_db',
-                              DBUser: 'moodle_user',
-                              DBPass: !Ref DatabasePassword,
-                              WebHost: !Ref ElasticIP
-                            }
-                        ]
+                          "sed -i 's/DB_HOST/${DBHOST}/' /usr/share/nginx/html/moodle/config.php",
+                          {
+                            DBHOST: !GetAtt DBInstance.Endpoint.Address,
+                          }
+                         ],
+                         "Fn::Sub": [
+                          "sed -i 's/DB_PASS/${DBPASS}/' /usr/share/nginx/html/moodle/config.php",
+                          {
+                            DBPASS: !Ref DatabasePassword
+                          }
+                         ],
+                         "Fn::Sub": [
+                          "sed -i 's/WEB_HOST/${WEBHOST}/' /usr/share/nginx/html/moodle/config.php",
+                          {
+                            WEBHOST: !Ref ElasticIP
+                          }
+                         ]
                       ],     
                     ]
   WebServerSecurityGroup:
