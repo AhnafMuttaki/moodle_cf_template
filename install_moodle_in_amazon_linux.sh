@@ -129,4 +129,4 @@ mkdir /usr/share/nginx/html/moodledata
 chmod -R 777 /usr/share/nginx/html/moodledata
 
 #install moodle
-# sudo /bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=en --adminuser=admin --adminpass=Admin@1234 --adminemail=admin@yopmail.com --agree-license --fullname=TestLMS --shortname=LMS
+sudo /bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=en --adminuser=admin --adminpass=Admin@1234 --adminemail=admin@yopmail.com --agree-license --fullname=TestLMS --shortname=LMS
