@@ -423,16 +423,7 @@ Resources:
                          "sudo /bin/yum install git -y",
                          "sudo /bin/git clone --branch MOODLE_400_STABLE https://github.com/AhnafMuttaki/moodle_cf_template.git",
                          "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
-                         "Fn::Sub": [
-                            "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh ${DBHost} ${DBName} ${DBUser} ${DBPass} ${WebHost}",
-                            {
-                              DBHost: !GetAtt DBInstance.Endpoint.Address,
-                              DBName: 'moodle_db',
-                              DBUser: 'moodle_user',
-                              DBPass: !Ref DatabasePassword,
-                              WebHost: !Ref ElasticIP
-                            }
-                        ]
+                         "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh"
                       ],     
                     ]
   WebServerSecurityGroup:
