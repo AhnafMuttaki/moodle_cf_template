@@ -423,19 +423,19 @@ Resources:
                          "sudo /bin/yum install git -y",
                          "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
                          "Fn::Sub": [
-                          "sed -i 's/DB_HOST/${DBHOST}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                          "sudo sed -i 's/DB_HOST/${DBHOST}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                           {
                             DBHOST: !GetAtt DBInstance.Endpoint.Address,
                           }
                          ],
                          "Fn::Sub": [
-                          "sed -i 's/DB_PASS/${DBPASS}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                          "sudo sed -i 's/DB_PASS/${DBPASS}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                           {
                             DBPASS: !Ref DatabasePassword
                           }
                          ],
                          "Fn::Sub": [
-                          "sed -i 's/WEB_HOST/${WEBHOST}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                          "sudo sed -i 's/WEB_HOST/${WEBHOST}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                           {
                             WEBHOST: !Ref ElasticIP
                           }
