@@ -94,6 +94,32 @@ for i in nginx php-fpm mariadb; do sudo systemctl start $i; done
 sudo yum install git -y
 sudo git clone https://github.com/moodle/moodle.git
 sudo cp -R moodle /usr/share/nginx/html
+sudo cat << EOF > /usr/share/nginx/html/moodle/config.php
+<?php  // Moodle configuration file
+unset(\$CFG);
+global \$CFG;
+\$CFG = new stdClass();
+\$CFG->dbtype    = 'mysqli';
+\$CFG->dblibrary = 'native';
+\$CFG->dbhost    = '$1';
+\$CFG->dbname    = '$2';
+\$CFG->dbuser    = '$3';
+\$CFG->dbpass    = '$4';
+\$CFG->prefix    = 'mdl_';
+\$CFG->dboptions = array (
+  'dbpersist' => 0,
+  'dbport' => 3306,
+  'dbsocket' => '',
+  'dbcollation' => 'utf8mb4_general_ci',
+);
+\$CFG->wwwroot   = '$5';
+\$CFG->dataroot  = '/usr/share/nginx/html/moodledata';
+\$CFG->admin     = 'admin';
+\$CFG->directorypermissions = 0777;
+require_once(__DIR__ . '/lib/setup.php');
+// There is no php closing tag in this file,
+// it is intentional because it prevents trailing whitespace problems!
+EOF
 chown -R nginx:nginx /usr/share/nginx/html/moodle
 chmod -R 777 /usr/share/nginx/html/moodle
 
