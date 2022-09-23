@@ -79,7 +79,7 @@ Parameters:
     Description: 'The database password'
     Type: String
     NoEcho: true
-
+    Default: 'Admin1234'
   MoodleLang:
     Description: Language Code of Moodle Instance
     Type: String
