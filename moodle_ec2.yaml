@@ -423,7 +423,25 @@ Resources:
                          "sudo /bin/yum install git -y",
                          "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
                          "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
-                         "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh"
+                         "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                         "Fn:Sub": [
+                          "sed -i 's/DB_HOST/${DBHOST}/' /usr/share/nginx/html/moodle/config.php",
+                          {
+                            DBHOST: !GetAtt DBInstance.Endpoint.Address,
+                          }
+                         ],
+                         "Fn:Sub": [
+                          "sed -i 's/DB_PASS/${DBPASS}/' /usr/share/nginx/html/moodle/config.php",
+                          {
+                            DBPASS: !Ref DatabasePassword
+                          }
+                         ],
+                         "Fn:Sub": [
+                          "sed -i 's/WEB_HOST/${WEBHOST}/' /usr/share/nginx/html/moodle/config.php",
+                          {
+                            WEBHOST: !Ref ElasticIP
+                          }
+                         ]
                       ],     
                     ]
   WebServerSecurityGroup:
