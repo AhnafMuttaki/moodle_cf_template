@@ -1,6 +1,6 @@
 #!/bin/sh
 sudo yum update -y
-sudo amazon-linux-extras install nginx1 php8.0 -y
+sudo amazon-linux-extras install nginx1 php8.1 -y
 sudo yum clean metadata
 sudo yum install git php-{pear,cgi,common,curl,mbstring,gd,mysqli,mysqlnd,gettext,bcmath,json,xml,fpm,intl,zip} -y
 # Back up existing config
@@ -131,4 +131,4 @@ mkdir /usr/share/nginx/html/moodledata
 chmod -R 777 /usr/share/nginx/html/moodledata
 
 #install moodle
-sudo /bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=en --adminuser=admin --adminpass=Admin@1234 --adminemail=admin@yopmail.com --agree-license --fullname=TestLMS --shortname=LMS
+# sudo /bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=en --adminuser=admin --adminpass=Admin@1234 --adminemail=admin@yopmail.com --agree-license --fullname=TestLMS --shortname=LMS

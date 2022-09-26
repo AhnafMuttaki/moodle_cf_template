@@ -462,8 +462,8 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties:
       DBName: 'moodle_db'
-      Engine: MySQL
-      EngineVersion: '8.0.30'
+      Engine: MariaDB
+      EngineVersion: '10.6.9'
       MasterUsername: 'moodle_user'
       DBInstanceClass: 'db.t2.small'
       DBSecurityGroups:
