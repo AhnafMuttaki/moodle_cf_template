@@ -1,6 +1,6 @@
 #!/bin/sh
 sudo yum update -y
-sudo amazon-linux-extras install nginx1 php8.1 -y
+sudo amazon-linux-extras install nginx1 php8.0 -y
 sudo yum clean metadata
 sudo yum install git php-{pear,cgi,common,curl,mbstring,gd,mysqli,mysqlnd,gettext,bcmath,json,xml,fpm,intl,zip} -y
 # Back up existing config

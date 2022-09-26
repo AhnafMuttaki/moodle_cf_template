@@ -422,26 +422,26 @@ Resources:
                          "#!/bin/bash -xe", 
                          "sudo /bin/yum install git -y",
                          "sudo /bin/git clone https://github.com/AhnafMuttaki/moodle_cf_template.git",
+                         "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                         "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
                          "Fn::Sub": [
-                          "sudo sed -i 's/DB_HOST/${DBHOST}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                          "sed -i 's/DB_HOST/${DBHOST}/' /usr/share/nginx/html/moodle/config.php",
                           {
                             DBHOST: !GetAtt DBInstance.Endpoint.Address,
                           }
                          ],
                          "Fn::Sub": [
-                          "sudo sed -i 's/DB_PASS/${DBPASS}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                          "sed -i 's/DB_PASS/${DBPASS}/' /usr/share/nginx/html/moodle/config.php",
                           {
                             DBPASS: !Ref DatabasePassword
                           }
                          ],
                          "Fn::Sub": [
-                          "sudo sed -i 's/WEB_HOST/${WEBHOST}/' ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
+                          "sed -i 's/WEB_HOST/${WEBHOST}/' /usr/share/nginx/html/moodle/config.php",
                           {
                             WEBHOST: !Ref ElasticIP
                           }
-                         ],
-                         "sudo chmod +x ./moodle_cf_template/install_moodle_in_amazon_linux.sh",
-                         "sudo ./moodle_cf_template/install_moodle_in_amazon_linux.sh"
+                         ]
                       ],     
                     ]
   WebServerSecurityGroup:
@@ -462,8 +462,8 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties:
       DBName: 'moodle_db'
-      Engine: MariaDB
-      EngineVersion: '10.6.9'
+      Engine: MySQL
+      EngineVersion: '8.0.30'
       MasterUsername: 'moodle_user'
       DBInstanceClass: 'db.t2.small'
       DBSecurityGroups:
