@@ -18,8 +18,6 @@ sudo sed -i 's|;*expose_php=.*|expose_php=0|g' /etc/php.ini
 sudo sed -i 's|;*post_max_size = 8M|post_max_size = 50M|g' /etc/php.ini
 sudo sed -i 's|;*upload_max_filesize = 2M|upload_max_filesize = 10M|g' /etc/php.ini
 sudo sed -i 's|;*max_file_uploads = 20|max_file_uploads = 20|g' /etc/php.ini
-sudo sed -i 's|;*max_input_vars = 1000|max_file_uploads = 5000|g' /etc/php.ini
-
 # nginx.conf
 cat << EOF > /etc/nginx/nginx.conf
 # For more information on configuration, see:
