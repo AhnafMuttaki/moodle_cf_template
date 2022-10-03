@@ -105,7 +105,7 @@ cat << EOF > /usr/share/nginx/html/moodle/config.php
 unset(\$CFG);
 global \$CFG;
 \$CFG = new stdClass();
-\$CFG->dbtype    = 'mysqli';
+\$CFG->dbtype    = 'pgsql';
 \$CFG->dblibrary = 'native';
 \$CFG->dbhost    = 'DB_HOST';
 \$CFG->dbname    = 'moodle_db';
@@ -114,7 +114,7 @@ global \$CFG;
 \$CFG->prefix    = 'mdl_';
 \$CFG->dboptions = array (
   'dbpersist' => 0,
-  'dbport' => 3306,
+  'dbport' => 5432,
   'dbsocket' => '',
   'dbcollation' => 'utf8mb4_general_ci',
 );
