@@ -462,10 +462,10 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties:
       DBName: 'moodle_db'
-      Engine: MySQL
-      EngineVersion: '5.7.38'
+      Engine: aurora-postgresql
+      EngineVersion: '13.7'
       MasterUsername: 'moodle_user'
-      DBInstanceClass: 'db.t2.small'
+      DBInstanceClass: 'db.t3.medium'
       DBSecurityGroups:
         - Ref: DBSecurityGroup
       AllocatedStorage: '5'
