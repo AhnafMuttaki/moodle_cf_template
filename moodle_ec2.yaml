@@ -468,7 +468,6 @@ Resources:
       DBInstanceClass: 'db.t3.medium'
       DBSecurityGroups:
         - Ref: DBSecurityGroup
-      AllocatedStorage: '5'
       MasterUserPassword: !Ref DatabasePassword
   DBSecurityGroup:
     Type: AWS::RDS::DBSecurityGroup
