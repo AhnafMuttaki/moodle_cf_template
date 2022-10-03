@@ -1,3 +1,6 @@
-Does: installs nginx and downloads moodle
+Does:
+installs nginx and downloads moodle
 
-Remaining: configuring config.php in moodle run install moodle script
+Remaining:
+configuring config.php in moodle
+run install moodle script
