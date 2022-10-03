@@ -3,6 +3,8 @@ sudo yum update -y
 sudo amazon-linux-extras install nginx1 php7.4 -y
 sudo yum clean metadata
 sudo yum install git mariadb-server php-{pear,cgi,common,curl,mbstring,gd,mysqlnd,gettext,bcmath,json,xml,fpm,intl,zip} -y
+sudo yum install php-{pgsql,xmlrpc,soap,sodium,opcache} -y
+
 # Back up existing config
 sudo cp -R /etc/nginx /etc/nginx-backup
 sudo chmod -R 777 /var/log
@@ -18,6 +20,9 @@ sudo sed -i 's|;*expose_php=.*|expose_php=0|g' /etc/php.ini
 sudo sed -i 's|;*post_max_size = 8M|post_max_size = 50M|g' /etc/php.ini
 sudo sed -i 's|;*upload_max_filesize = 2M|upload_max_filesize = 10M|g' /etc/php.ini
 sudo sed -i 's|;*max_file_uploads = 20|max_file_uploads = 20|g' /etc/php.ini
+
+sudo sed -i 's|; max_input_vars = 1000|max_input_vars = 5000|g' /etc/php.ini
+
 # nginx.conf
 cat << EOF > /etc/nginx/nginx.conf
 # For more information on configuration, see:
@@ -88,7 +93,8 @@ for i in nginx php-fpm mariadb; do sudo systemctl start $i; done
 # lets encrypt
 #sudo amazon-linux-extras install epel -y
 #sudo yum install certbot certbox-nginx -y 
-#sudo systemctl restart nginx.service
+sudo systemctl restart nginx.service
+sudo service php-fpm restart
 
 # Install Moodle
 sudo yum install git -y
