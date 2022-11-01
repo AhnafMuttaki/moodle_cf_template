@@ -62,6 +62,7 @@ http {
         add_header X-Content-Type-Options "nosniff";
         index index.php index.html index.htm;
         charset utf-8;
+        client_max_body_size 64M;
         location / {
             try_files \$uri \$uri/ /index.php?\$query_string;
         }
