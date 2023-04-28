@@ -1,8 +1,24 @@
 #!/bin/sh
+# Update
 sudo yum update -y
+
+# php setup and library install
 sudo amazon-linux-extras install nginx1 php8.0 -y
 sudo yum clean metadata
 sudo yum install git php-{pear,cgi,common,curl,mbstring,gd,mysqli,mysqlnd,gettext,bcmath,json,xml,fpm,intl,zip} -y
+sudo yum install php-{pgsql,xmlrpc,soap,sodium,opcache} -y --skip-broken
+
+# Mariadb Server
+curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+sudo bash mariadb_repo_setup --os-type=rhel  --os-version=7 --mariadb-server-version=10.9
+sudo rm -rf /var/cache/yum
+sudo yum makecache
+sudo amazon-linux-extras install epel -y
+sudo yum install MariaDB-server MariaDB-client -y
+
+
+
+
 # Back up existing config
 sudo cp -R /etc/nginx /etc/nginx-backup
 sudo chmod -R 777 /var/log
@@ -15,6 +31,7 @@ sudo sed -i 's|;*pm = ondemand|pm = ondemand|g' /etc/php-fpm.d/www.conf
 sudo sed -i 's|;cgi.fix_pathinfo=1|cgi.fix_pathinfo=0|g' /etc/php.ini
 sudo sed -i 's|;*expose_php=.*|expose_php=0|g' /etc/php.ini
 #sudo sed -i 's|;*memory_limit = 128M|memory_limit = 512M|g' /etc/php.ini
+sudo sed -i 's|; max_input_vars = 1000|max_input_vars = 5000|g' /etc/php.ini
 sudo sed -i 's|;*post_max_size = 8M|post_max_size = 50M|g' /etc/php.ini
 sudo sed -i 's|;*upload_max_filesize = 2M|upload_max_filesize = 10M|g' /etc/php.ini
 sudo sed -i 's|;*max_file_uploads = 20|max_file_uploads = 20|g' /etc/php.ini
@@ -90,16 +107,26 @@ for i in nginx php-fpm mariadb; do sudo systemctl start $i; done
 #sudo yum install certbot certbox-nginx -y 
 #sudo systemctl restart nginx.service
 
+# Create DB and user
+sudo mysql -e "CREATE USER IF NOT EXISTS 'moodle_user'@'localhost' IDENTIFIED BY 'BSAdmin2023'"
+sudo mysql -e "GRANT ALL PRIVILEGES ON moodledb.* to 'moodle_user'@'localhost'"
+
 # Install Moodle
 sudo yum install git -y
 sudo git clone https://github.com/moodle/moodle.git
 sudo cp -R moodle /usr/share/nginx/html
+
+cd /usr/share/nginx/html/moodle
+git config --global --add safe.directory /usr/share/nginx/html/moodle
+git stash
+git checkout MOODLE_402_STABLE
+
 cat << EOF > /usr/share/nginx/html/moodle/config.php
 <?php  // Moodle configuration file
 unset(\$CFG);
 global \$CFG;
 \$CFG = new stdClass();
-\$CFG->dbtype    = 'mysqli';
+\$CFG->dbtype    = 'mariadb';
 \$CFG->dblibrary = 'native';
 \$CFG->dbhost    = 'DB_HOST';
 \$CFG->dbname    = 'moodle_db';
@@ -128,5 +155,7 @@ chmod -R 777 /usr/share/nginx/html/moodle
 mkdir /usr/share/nginx/html/moodledata
 chmod -R 777 /usr/share/nginx/html/moodledata
 
+
 #install moodle
-# sudo /bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=en --adminuser=admin --adminpass=Admin@1234 --adminemail=admin@yopmail.com --agree-license --fullname=TestLMS --shortname=LMS
+sudo mysql -e "CREATE DATABASE IF NOT EXISTS moodledb"
+sudo /bin/php /usr/share/nginx/html/moodle/admin/cli/install_database.php --lang=en --adminuser=admin --adminpass=Admin@1234 --adminemail=admin@yopmail.com --agree-license --fullname=TestLMS --shortname=LMS
