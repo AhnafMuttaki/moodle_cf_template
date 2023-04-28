@@ -17,8 +17,6 @@ sudo amazon-linux-extras install epel -y
 sudo yum install MariaDB-server MariaDB-client -y
 
 
-
-
 # Back up existing config
 sudo cp -R /etc/nginx /etc/nginx-backup
 sudo chmod -R 777 /var/log
@@ -108,7 +106,7 @@ for i in nginx php-fpm mariadb; do sudo systemctl start $i; done
 #sudo systemctl restart nginx.service
 
 # Create DB and user
-sudo mysql -e "CREATE USER IF NOT EXISTS 'moodle_user'@'localhost' IDENTIFIED BY 'BSAdmin2023'"
+sudo mysql -e "CREATE USER IF NOT EXISTS 'moodle_user'@'localhost' IDENTIFIED BY '#DB_PASS'"
 sudo mysql -e "GRANT ALL PRIVILEGES ON moodledb.* to 'moodle_user'@'localhost'"
 
 # Install Moodle
@@ -128,10 +126,10 @@ global \$CFG;
 \$CFG = new stdClass();
 \$CFG->dbtype    = 'mariadb';
 \$CFG->dblibrary = 'native';
-\$CFG->dbhost    = 'DB_HOST';
-\$CFG->dbname    = 'moodle_db';
+\$CFG->dbhost    = 'localhost';
+\$CFG->dbname    = 'moodledb';
 \$CFG->dbuser    = 'moodle_user';
-\$CFG->dbpass    = 'DB_PASS';
+\$CFG->dbpass    = '#DB_PASS';
 \$CFG->prefix    = 'mdl_';
 \$CFG->dboptions = array (
   'dbpersist' => 0,
@@ -147,6 +145,11 @@ require_once(__DIR__ . '/lib/setup.php');
 // There is no php closing tag in this file,
 // it is intentional because it prevents trailing whitespace problems!
 EOF
+
+IP_ADDR=`curl -s http://whatismyip.akamai.com/`
+sudo sed -i "s|WEB_HOST|$IP_ADDR|g" /usr/share/nginx/html/moodle/config.php
+
+
 chown -R nginx:nginx /usr/share/nginx/html/moodle
 chmod -R 777 /usr/share/nginx/html/moodle
 
