@@ -1,12 +1,15 @@
 #!/bin/sh
-# Update
+# Author: Ahnaf Muttaki
+# OS Compatibility: Amazon Linux 2
+# Change #DB_PASS before execution
+
 sudo yum update -y
 
 # php setup and library install
-sudo amazon-linux-extras install nginx1 php8.0 -y
+sudo amazon-linux-extras install nginx1 php8.1 -y
 sudo yum clean metadata
 sudo yum install git php-{pear,cgi,common,curl,mbstring,gd,mysqli,mysqlnd,gettext,bcmath,json,xml,fpm,intl,zip} -y
-sudo yum install php-{pgsql,xmlrpc,soap,sodium,opcache} -y --skip-broken
+sudo yum install php-{pgsql,xml,soap,sodium,opcache} -y
 
 # Mariadb Server
 curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
@@ -30,8 +33,8 @@ sudo sed -i 's|;cgi.fix_pathinfo=1|cgi.fix_pathinfo=0|g' /etc/php.ini
 sudo sed -i 's|;*expose_php=.*|expose_php=0|g' /etc/php.ini
 #sudo sed -i 's|;*memory_limit = 128M|memory_limit = 512M|g' /etc/php.ini
 sudo sed -i 's|; max_input_vars = 1000|max_input_vars = 5000|g' /etc/php.ini
-sudo sed -i 's|;*post_max_size = 8M|post_max_size = 50M|g' /etc/php.ini
-sudo sed -i 's|;*upload_max_filesize = 2M|upload_max_filesize = 10M|g' /etc/php.ini
+sudo sed -i 's|;*post_max_size = 8M|post_max_size = 100M|g' /etc/php.ini
+sudo sed -i 's|;*upload_max_filesize = 2M|upload_max_filesize = 100M|g' /etc/php.ini
 sudo sed -i 's|;*max_file_uploads = 20|max_file_uploads = 20|g' /etc/php.ini
 # nginx.conf
 cat << EOF > /etc/nginx/nginx.conf
@@ -66,6 +69,7 @@ http {
     server {
         listen 80;
         server_name _;
+        client_max_body_size 100M;
         root /usr/share/nginx/html/moodle;
         add_header X-Frame-Options "SAMEORIGIN";
         add_header X-XSS-Protection "1; mode=block";
